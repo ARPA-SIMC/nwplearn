@@ -2,7 +2,7 @@ LDFLAGS = -lpgplot -lX11
 FC = gfortran
 #LIB_TAG = d
 LIB_TAG =
-EXE = oscill adv1d
+EXE = oscill adv1d lorenz
 
 all: $(EXE)
 
@@ -16,6 +16,12 @@ oscill: oscill.o
 	$(FC) -o $@ $^ `pkg-config --libs plplot$(LIB_TAG)-f95`
 
 oscill.o: oscill.f90
+	$(FC) -c $(FCFLAGS) `pkg-config --cflags plplot$(LIB_TAG)-f95` $<
+
+lorenz: lorenz.o
+	$(FC) -o $@ $^ `pkg-config --libs plplot$(LIB_TAG)-f95`
+
+lorenz.o: lorenz.f90
 	$(FC) -c $(FCFLAGS) `pkg-config --cflags plplot$(LIB_TAG)-f95` $<
 
 clean:
