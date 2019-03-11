@@ -8,7 +8,6 @@ COMPLEX(kind=plflt) :: u, ua, c
 REAL(kind=plflt), ALLOCATABLE :: x(:), y(:)
 !INTEGER :: PGOPEN, PGCURS
 CHARACTER (LEN=4) :: cc
-LOGICAL lismouse
 
 PRINT*,'Inserisci il numero di passi temporali'
 READ*,nn
@@ -22,11 +21,6 @@ CALL plparseopts(PL_PARSE_FULL)
 CALL plscol0 (0, 255, 255, 255)
 CALL plscol0 (1, 0, 0, 0)
 CALL plinit
-!g1=PGOPEN('/XWIN')
-!CALL PGASK(.FALSE.)
-!CALL PGQINF('CURSOR',cc,i)
-!lismouse = (cc == 'YES')
-lismouse = .FALSE.
 
 DO m=1,3
 u=(1.,0.) ! Condizione iniziale
@@ -48,32 +42,11 @@ CALL ANALITICA(u,c,nn,y)
 CALL plline(x,y)
 CALL plwidth(1._plflt)
 
-DO n=1,4
+DO n=1,4 ! loop sui metodi di soluzione
   u=(1.,0.) ! Condizione iniziale a n=0
 
-  IF (n == 4 .AND. lismouse) THEN ! Leap frog, input della c.i. a n=1
-!    i=PGCURS(xc,yc,cc)
-!    g2=PGOPEN('/XWIN')
-!    CALL PGASK(.FALSE.)
-!    CALL PGSLCT(g2)
-!    CALL PGENV(-2., 2.,-2., 2.,1,1)
-!    CALL PGLAB('Parte reale', 'Parte immaginaria', &
-!     'Scegli la condizione iniziale a n=1 per lo schema a 3 livelli')
-!    ua=u*EXP(c)
-!    CALL PGMOVE(-2.*REAL(ua),-2.*AIMAG(ua))
-!    CALL PGDRAW(2.*REAL(ua),2.*AIMAG(ua)) 
-!    CALL PGSFS(2)
-!    CALL PGCIRC(0.,0.,1.)
-!    CALL PGCIRC(0.,0.,2.)
-!    CALL PGCIRC(REAL(ua),AIMAG(ua),.05)
-!    i=PGCURS(xc,yc,cc)
-!    IF (cc == 'D') THEN ! tasto centrale del mouse
-!      ua=CMPLX(xc,yc)
-!    ENDIF
-!    CALL PGCLOS()
-!    CALL PGSLCT(g1)
-  ELSE
-    ua=pert(m)*u*EXP(c) ! se non ho il mouse uso la c.i. analitica
+  IF (n == 4) THEN ! Leap frog
+    ua=pert(m)*u*EXP(c) ! impongo una perturbazione a n=1
   ENDIF
 
   CALL plcol0(1+n)
@@ -84,7 +57,6 @@ ENDDO
 CALL plcol0(1)
 ENDDO
 
-!IF (lismouse) i=PGCURS(xc,yc,cc)
 CALL plend()
 
 END PROGRAM OSCILL

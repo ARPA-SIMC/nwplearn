@@ -2,7 +2,7 @@ PROGRAM ADV1D
 USE plplot
 IMPLICIT NONE
 
-INTEGER :: nn, jj, n, j, g1, g2, i, m, aspett
+INTEGER :: nn, jj, n, j, g1, g2, i, m
 REAL(kind=plflt) :: dt, dx, xc, yc, cfl, c, limiti(2)
 REAL(kind=plflt), ALLOCATABLE :: u0(:), u(:), x(:), ya(:), yn(:)
 CHARACTER (LEN=4) :: cc
@@ -22,9 +22,6 @@ ENDDO
 
 c=1.
 dt=cfl*dx/c
-aspett=1 ! secondi per raggiungere x=1
-aspett=INT((dx/c)*aspett*10000.) !1000000.
-!aspett=0.
 u0=0.
 !u0(jj/4)=1.
 DO j=1,jj/8
@@ -50,26 +47,18 @@ DO m=1,SIZE(schema)
     CALL ANALITICA(u0,c,dx,dt,nn,jj,n,ya)
     CALL INTEGRA(u,c,dx,dt,nn,jj,n,m,yn)
     IF (MOD(n,10) /= 0) CYCLE
-!    CALL plbop
-!    CALL PGBBUF
-!    CALL PGSLW(1)
-!    CALL PGSCI(1)
     CALL plcol0(1)
     CALL plenv(0._plflt, 1._plflt, limiti(1), limiti(2),0,0)
     CALL pllab('x', 'U(x,t)', &
      'Soluzione numerica dell''equazione di avvezione, schema '// schema(m))
 
-!    CALL plwid(8)
     CALL plcol0(1)
     CALL plline(x,ya)
 
-!    CALL plwid(4)
     CALL plcol0(1+m)
     CALL plline(x,yn)
-!    CALL pleop
 
     CALL SETCC(u,jj)
-!    IF (lismouse) CALL MYSLEEP(aspett)
 
   ENDDO
 
