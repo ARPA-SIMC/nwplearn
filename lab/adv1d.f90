@@ -11,7 +11,7 @@ CHARACTER (LEN=17) :: schema(5)=(/'centrato ordine 2', 'upwind ordine 1  ', &
 LOGICAL lismouse
 
 PRINT*,'Inserisci il numero di passi spaziali e il numero di Courant'
-PRINT*,'Valori consigliati: 30,0.1'
+PRINT*,'Esempio: 30,0.1'
 READ*,jj,cfl
 ALLOCATE(u0(-2:jj+2),u(-2:jj+2),x(0:jj),ya(0:jj),yn(0:jj))
 
@@ -41,8 +41,7 @@ CALL plinit
 
 DO m=1,SIZE(schema)
   u=u0
-!  DO n=1,NINT(2._plflt/dt*c) ! 3 cicli completi
-  DO n=1,NINT(1.0_plflt/dt*c) ! 3 cicli completi
+  DO n=1,NINT(2.0_plflt/dt*c) ! 2 cicli completi
 
     CALL ANALITICA(u0,c,dx,dt,nn,jj,n,ya)
     CALL INTEGRA(u,c,dx,dt,nn,jj,n,m,yn)
@@ -50,7 +49,7 @@ DO m=1,SIZE(schema)
     CALL plcol0(1)
     CALL plenv(0._plflt, 1._plflt, limiti(1), limiti(2),0,0)
     CALL pllab('x', 'U(x,t)', &
-     'Soluzione numerica dell''equazione di avvezione, schema '// schema(m))
+     'Soluzione numerica dell''equazione di avvezione, schema '//TRIM(schema(m)))
 
     CALL plcol0(1)
     CALL plline(x,ya)
