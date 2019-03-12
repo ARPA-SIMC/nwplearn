@@ -22,11 +22,13 @@ CALL plscol0 (0, 255, 255, 255)
 CALL plscol0 (1, 0, 0, 0)
 CALL plinit
 
-DO m=1,3
-u=(1.,0.) ! Condizione iniziale
 dt=1./nn
 om=3.*8.*ATAN(1.) ! 3 oscillazioni (3*2*pi)
 c=dt*CMPLX(0.,om) ! i*omega*dt
+PRINT*,'omega*dt=',om*dt
+
+DO m=1,3 ! loop sulle perturbazioni per leap-frog
+u=(1.,0.) ! Condizione iniziale
 
 CALL plenv(0._plflt, 1._plflt, &
  -3._plflt*ABS(REAL(u,kind=plflt)),3._plflt*ABS(REAL(u,kind=plflt)),0,0)
