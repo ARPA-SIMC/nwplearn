@@ -45,17 +45,18 @@ DO m=1,SIZE(schema)
 
     CALL ANALITICA(u0,c,dx,dt,nn,jj,n,ya)
     CALL INTEGRA(u,c,dx,dt,nn,jj,n,m,yn)
-    IF (MOD(n,10) /= 0) CYCLE
-    CALL plcol0(1)
-    CALL plenv(0._plflt, 1._plflt, limiti(1), limiti(2),0,0)
-    CALL pllab('x', 'U(x,t)', &
-     'Soluzione numerica dell''equazione di avvezione, schema '//TRIM(schema(m)))
+    IF (MOD(n,10) == 0) THEN ! graphics every 10 steps
+      CALL plcol0(1)
+      CALL plenv(0._plflt, 1._plflt, limiti(1), limiti(2),0,0)
+      CALL pllab('x', 'U(x,t)', &
+       'Soluzione numerica dell''equazione di avvezione, schema '//TRIM(schema(m)))
 
-    CALL plcol0(1)
-    CALL plline(x,ya)
+      CALL plcol0(1)
+      CALL plline(x,ya)
 
-    CALL plcol0(1+m)
-    CALL plline(x,yn)
+      CALL plcol0(1+m)
+      CALL plline(x,yn)
+    ENDIF
 
     CALL SETCC(u,jj)
 
