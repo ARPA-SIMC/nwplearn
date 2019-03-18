@@ -5,7 +5,7 @@ CHARACTER(len=512) :: obsfile
 
 CALL plsdev('pdfc')
 CALL plsfnam('opt_int.pdf')
-CALL plsetopt('portrait', ' ')
+!CALL plsetopt('portrait', ' ')
 !CALL plparseopts(PL_PARSE_FULL)
 CALL plscol0 (0, 255, 255, 255)
 CALL plscol0 (1, 0, 0, 0)
