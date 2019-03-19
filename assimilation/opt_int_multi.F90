@@ -48,8 +48,6 @@ CALL init_random_seed()
 ! "truth" function wavenumber in x and y
 freqx = 4.0_fp_d
 freqy = 4.0_fp_d
-! number of observations
-!n = 100
 ! observation error distribution variance
 obs_set%err = 0.1_fp_d
 ! analytical functions to use for covariances
@@ -73,7 +71,7 @@ DO WHILE(i <= n)
   CALL RANDOM_NUMBER(obs_set%obs(i)%coord%y)
 ! ensure points are distant enough 
   IF (i > 1) THEN
-    IF (ANY(distance(obs_set%obs(i)%coord, obs_set%obs(:i-1)%coord) < 0.01)) THEN
+    IF (ANY(distance(obs_set%obs(i)%coord, obs_set%obs(:i-1)%coord) < 0.02)) THEN
       CYCLE
     ENDIF
   ENDIF
