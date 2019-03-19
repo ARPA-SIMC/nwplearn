@@ -9,7 +9,13 @@ essere fornito come parametro a linea di comando. Le caratteristiche
 della griglia del background e dell'analisi sono lette dal file
 `grid.naml`.
 
-Modificare varianza dell'errore del background in `grid.naml` e
+#### Esercizio
+
+Verificare come cambia il risultato dell'analisi al cambiare dei
+parametri delle matrici di varianza/covarianza dell'errore di
+background e osservazioni.
+
+Modificare la varianza dell'errore del background in `grid.naml` e la
 varianza dell'errore delle osservazioni nel file di osservazioni
 scelto.
 
@@ -32,16 +38,23 @@ Analizzare il risultato in `opt_int.pdf`.
 ### opt_int_multi
 
 Calcola l'analisi grigliata a partire da un background costante (=10.)
-e una serie di osservazioni che definiscono un campo predefinito con
-funzioni di Fourier bidimensionali più opportune perturbazioni casuali
-proporzionate all'errore osservativo fornito.
+e una serie di osservazioni via via più fitte che definiscono un campo
+predefinito con funzioni di Fourier bidimensionali più opportune
+perturbazioni casuali proporzionate all'errore osservativo fornito.
 
 Le caratteristiche della griglia del background e dell'analisi sono
-lette dal file `grid.naml`. Il risultato dovrebbe essere un campo il
-più possibile vicino alla verità, pari alla funzione di Fourier
-bidimensionale.
+lette dal file `grid.naml`. Il risultato dovrebbe essere un campo di
+analisi il più possibile vicino alla verità, pari alla funzione di
+Fourier bidimensionale.
 
-Modificare varianza dell'errore del background in `grid.naml` e
+#### Esercizio
+
+Ottenere una minimizzazzione dell'errore dell'analisi per diversi
+numeri di osservazioni intervenendo sulle caratteristiche delle
+matrici di varianza/covarianza dell'errore di background e
+osservazioni
+
+Modificare la varianza dell'errore del background in `grid.naml` e la
 varianza dell'errore delle osservazioni nella riga di programma:
 
 ```
@@ -60,7 +73,7 @@ an_opt_int%b_mat_func = 'gauss'
 an_opt_int%b_mat_fact = 0.4_fp_d
 ```
 
-in `opt_int.F90` (queste ultime modifiche richiedono ricompilazione
+in `opt_int_multi.F90` (queste ultime modifiche richiedono ricompilazione
 con `make`).
 
 Analizzare il risultato in `opt_int_multi.pdf`.
