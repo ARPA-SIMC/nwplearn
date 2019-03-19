@@ -1,7 +1,7 @@
 #LIB_TAG = d
 LIB_TAG =
 FC = gfortran
-FCFLAGS = -g -fcheck=bounds -Wall -I/usr/lib64/gfortran/modules
+FCFLAGS = -g -fcheck=bounds -Wall `pkg-config --cflags plplot$(LIB_TAG)-f95`
 LDFLAGS = -llapack `pkg-config --libs plplot$(LIB_TAG)-f95`
 
 EXE = opt_int opt_int_multi
