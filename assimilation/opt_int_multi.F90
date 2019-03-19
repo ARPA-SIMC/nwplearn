@@ -4,8 +4,8 @@ IMPLICIT NONE
 
 CALL plsdev('pdfc')
 CALL plsfnam('opt_int_multi.pdf')
-CALL plsetopt('portrait', ' ')
-CALL plparseopts(PL_PARSE_FULL)
+!CALL plsetopt('portrait', ' ')
+!CALL plparseopts(PL_PARSE_FULL)
 CALL plscol0 (0, 255, 255, 255)
 CALL plscol0 (1, 0, 0, 0)
 CALL plinit()
