@@ -4,7 +4,7 @@ FC = gfortran
 FCFLAGS = -g -fcheck=bounds -Wall -I/usr/lib64/gfortran/modules
 LDFLAGS = -llapack `pkg-config --libs plplot$(LIB_TAG)-f95`
 
-EXE = opt_int
+EXE = opt_int opt_int_multi
 all: $(EXE)
 
 missing_valuse.o: kinds.o
@@ -18,8 +18,8 @@ opt_int: func_mo.o coord_mo.o obs_mo.o grid_mo.o func_mo.o an_opt_int_mo.o kinds
 opt_int1d.o: func_mo.o coord_mo.o obs_mo.o grid_mo.o func_mo.o an_opt_int_mo.o
 opt_int1d: func_mo.o coord_mo.o obs_mo.o grid_mo.o func_mo.o an_opt_int_mo.o
 
-opt_int.o: func_mo.o coord_mo.o obs_mo.o grid_mo.o an_opt_int_mo.o
-opt_int: func_mo.o coord_mo.o obs_mo.o grid_mo.o func_mo.o an_opt_int_mo.o kinds.o
+opt_int_multi.o: func_mo.o coord_mo.o obs_mo.o grid_mo.o an_opt_int_mo.o
+opt_int_multi: func_mo.o coord_mo.o obs_mo.o grid_mo.o func_mo.o an_opt_int_mo.o kinds.o
 
 %.o: %.f90
 	$(FC) -c $(FCFLAGS) $<

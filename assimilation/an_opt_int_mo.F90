@@ -53,8 +53,6 @@ distoo = obs_set%compute_distance()
 om = obs_set%err*obs_set%err*func_autocorr(distoo/this%o_mat_fact, this%o_mat_func)
 ! background error covariance matrix
 bm = bg%err*bg%err*func_autocorr(distoo/this%b_mat_fact, this%b_mat_func)
-PRINT*,bm
-PRINT*,this%b_mat_fact
 ! cut small bm values
 !WHERE (bm < obs_set%err*obs_set%err*0.01_fp_d)
 !  bm = 0.0_fp_d
