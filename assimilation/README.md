@@ -1,6 +1,6 @@
-== Optimal interpolation
+## Optimal interpolation
 
-=== opt_int
+### opt_int
 
 Calcola l'analisi grigliata a partire da un background costante (=10.)
 e una serie di osservazioni fornite dall'utente, ad esempio nei file
@@ -29,7 +29,7 @@ in `opt_int.F90` (questa seconda modifica richiede ricompilazione con
 
 Analizzare il risultato in `opt_int.pdf`.
 
-=== opt_int_multi
+### opt_int_multi
 
 Calcola l'analisi grigliata a partire da un background costante (=10.)
 e una serie di osservazioni che definiscono un campo predefinito con
