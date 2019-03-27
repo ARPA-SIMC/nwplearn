@@ -1,4 +1,5 @@
 MODULE shallow_water_mo
+  USE plplot
   IMPLICIT NONE
 
   INTEGER :: nx, ny, nt
@@ -6,7 +7,8 @@ MODULE shallow_water_mo
   REAL :: g=9.8, h=1., dt, dx, dy
   REAL,ALLOCATABLE :: u(:,:), v(:,:), hp(:,:), ut(:,:), vt(:,:), hpt(:,:), &
        utemp(:,:), vtemp(:,:), hptemp(:,:)
-
+  REAL(kind=plflt),ALLOCATABLE :: hx(:), hy(:)
+  
   NAMELIST/model_config/nx, ny, nt, g, h, dt
 
   
@@ -14,25 +16,40 @@ CONTAINS
 
   SUBROUTINE init(filename)
     CHARACTER(len=*),INTENT(in) :: filename
+    INTEGER :: i
 
     OPEN(10, file=filename, status='old')
     READ(10, nml=model_config)
     CLOSE(10)
-    PRINT*,'nx, ny, nt, g, h, dt:',nx, ny, nt, g, h, dt
 
     nxu = nx+1
     nyv = ny+1
     dx = 1./nx
     dy = 1./ny
+
+    PRINT*,'nx, ny, nt, g, h, dt:',nx, ny, nt, g, h, dt
+    PRINT*,'cfl:',SQRT(g*h)/(MIN(dx,dy)/dt)
+    
     ALLOCATE(hp(nx,ny), u(nxu,ny), v(nx,nyv))
     ALLOCATE(hpt(nx,ny), ut(nxu,ny), vt(nx,nyv))
     ALLOCATE(hptemp(nx,ny), utemp(nxu,ny), vtemp(nx,nyv))
+    ALLOCATE(hx(nx), hy(ny))
+    
+    DO i = 1, nx
+       hx(i) = dx*(REAL(i)-0.5)
+    ENDDO
+    DO i = 1, ny
+       hy(i) = dy*(REAL(i)-0.5)
+    ENDDO
     
   END SUBROUTINE init
 
 
-  SUBROUTINE rhs
-    INTEGER :: i,j
+  SUBROUTINE rhs(u, v, hp, ut, vt, hpt)
+    REAL,INTENT(in) :: u(:,:), v(:,:), hp(:,:) ! stato del modello
+    REAL,INTENT(out) :: ut(:,:), vt(:,:), hpt(:,:) ! tendenze calcolate
+
+  INTEGER :: i,j
 
     DO j = 1, ny
        DO i = 2, nx-1
@@ -56,7 +73,7 @@ CONTAINS
   
   SUBROUTINE eulero
 
-    CALL rhs
+    CALL rhs(u, v, hp, ut, vt, hpt)
     u(2:nx-1,:) = u(2:nx-1,:) + dt*ut(2:nx-1,:)
     v(:,2:ny-1) = v(:,2:ny-1) + dt*vt(:,2:ny-1)
     hp(:,:) = hp(:,:) + dt*hpt(:,:)
@@ -64,29 +81,34 @@ CONTAINS
   END SUBROUTINE eulero
 
 
-  SUBROUTINE eulerogen(dtg)
+  SUBROUTINE eulerogen(u, v, hp, ut, vt, hpt, utemp, vtemp, hptemp, dtg)
+    REAL,INTENT(in) :: u(:,:), v(:,:), hp(:,:) ! stato iniziale del modello
+    REAL,INTENT(in) :: ut(:,:), vt(:,:), hpt(:,:) ! tendenze calcolate
+    REAL,INTENT(out) :: utemp(:,:), vtemp(:,:), hptemp(:,:) ! stato nuovo del modello
     REAL,INTENT(in) :: dtg
 
-    CALL rhs
     utemp(2:nx-1,:) = u(2:nx-1,:) + dtg*ut(2:nx-1,:)
     vtemp(:,2:ny-1) = v(:,2:ny-1) + dtg*vt(:,2:ny-1)
     hptemp(:,:) = hp(:,:) + dtg*hpt(:,:)
 
-  END SUBROUTINE eulero
+  END SUBROUTINE eulerogen
 
 
   SUBROUTINE runge_kutta_2
 
-    utemp = u
-    
-    call eulerogen(dt/2.)
+    CALL rhs(u, v, hp, ut, vt, hpt)
+    call eulerogen(u, v, hp, ut, vt, hpt, utemp, vtemp, hptemp, dt/2.)
+    CALL rhs(utemp, vtemp, hptemp, ut, vt, hpt) 
+    ! piu' speditiva ma u, v, hp assegnate a diverse variabili e'
+    ! potenziale fonte di errori
+    !    call eulerogen(u, v, hp, ut, vt, hpt, u, v, hp, dt)
+    ! piu' corretto: metto il risultato in *temp e aggiorno
+    call eulerogen(u, v, hp, ut, vt, hpt, utemp, vtemp, hptemp, dt)
+    u(2:nx-1,:) = utemp(2:nx-1,:)
+    v(:,2:ny-1) = vtemp(:,2:ny-1)
+    hp(:,:) = hptemp(:,:)
 
-    CALL rhs
-    utemp(2:nx-1,:) = u(2:nx-1,:) + dt*ut(2:nx-1,:)
-    vtemp(:,2:ny-1) = v(:,2:ny-1) + dt*vt(:,2:ny-1)
-    hptemp(:,:) = hp(:,:) + dt*hpt(:,:)
-
-  END SUBROUTINE eulero
+  END SUBROUTINE runge_kutta_2
 
 
   SUBROUTINE boundary(ub, vb)
@@ -99,4 +121,21 @@ CONTAINS
 
   END SUBROUTINE boundary
 
+  
+  SUBROUTINE plot_contour(title, levels)
+    USE plplot
+    character(len=*) :: title
+    REAL(plflt) :: levels(:)
+    
+    CALL pl_setcontlabelparam(0.006_plflt, 0.6_plflt, 0.1_plflt, 1)
+    CALL pl_setcontlabelformat(6,4)
+    CALL plcol0(1)
+    CALL plenv(0._plflt, 1._plflt, 0._plflt, 1._plflt, 0, 0)
+    CALL pllab('x', 'y', TRIM(title))
+    CALL plcol0(1)
+    CALL plcont(REAL(hp, kind=plflt), 1, nx, 1, ny, levels, hx, hy)
+
+  END SUBROUTINE plot_contour
+
+    
 END MODULE shallow_water_mo
