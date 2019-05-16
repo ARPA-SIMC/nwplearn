@@ -28,7 +28,6 @@ PROGRAM shallow_water
   ! loop sul tempo
   DO i = 1, nt
      PRINT*,i,SUM(u)/((nx+1)*ny),SUM(v)/(nx*(ny+1)),SUM(hp)/(nx*ny)
-     PRINT*,MINVAL(hp),MAXVAL(hp)
      CALL runge_kutta_2 ! integro nel tempo
      IF (mod(i,10) == 0) THEN
         call plot_contour('Runge Kutta 2', levels) ! disegno il grafico
