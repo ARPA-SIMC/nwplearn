@@ -2,7 +2,8 @@
 
 Questo progetto include una serie di programmi fortran realizzati
 nell'ambito dell'Attività di Modellistica Numerica per il corso di
-laurea di Fisica del Sistema Terra dell'Università di Bologna.
+laurea magistrale in Fisica del Sistema Terra dell'Università di
+Bologna.
 
 I programmi comprendono l'elaborazione numerica e la rappresentazione
 grafica dei risultati con la libreria plplot.
