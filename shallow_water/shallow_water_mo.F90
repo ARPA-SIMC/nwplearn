@@ -71,6 +71,45 @@ CONTAINS
   END SUBROUTINE rhs
 
   
+  SUBROUTINE rhs_4_ord(u, v, hp, ut, vt, hpt)
+  REAL,INTENT(in) :: u(:,:), v(:,:), hp(:,:) ! stato del modello
+  REAL,INTENT(out) :: ut(:,:), vt(:,:), hpt(:,:) ! tendenze calcolate
+
+  INTEGER :: i,j
+
+  DO j = 1, ny
+    ut(2,j) = -g*(hp(2,j)-hp(1,j))/dx
+    DO i = 3, nx-2
+      ut(i,j) = -g*(-hp(i+1,j)+8.*hp(i,j)-8.*hp(i-1,j)+hp(i-2,j))/(12.*dx)
+    ENDDO
+    ut(nx-1,j) = -g*(hp(nx-1,j)-hp(nx-2,j))/dx
+  ENDDO
+
+  vt(1:nx,2) = -g*(hp(1:nx,2)-hp(1:nx,1))/dy
+  DO j = 3, ny-2
+    DO i = 1, nx
+      vt(i,j) = -g*(-hp(i,j+1)+8.*hp(i,j)-8.*hp(i,j-1)+hp(i,j-2))/(12.*dy)
+    ENDDO
+  ENDDO
+  vt(1:nx,ny-1) = -g*(hp(1:nx,ny-1)-hp(1:nx,ny-2))/dy
+
+  DO j = 1, ny, ny
+    DO i = 1, nx, nx
+      hpt(i,j) = -h*((u(i+1,j)-u(i,j))/dx + (v(i,j+1)-v(i,j))/dy)
+    ENDDO
+  ENDDO
+
+  DO j = 2, ny-1
+    DO i = 2, nx-1
+      hpt(i,j) = -h*( &
+       (-u(i+2,j)+8.*u(i+1,j)-8.*u(i,j)+u(i-1,j))/(12.*dx) + &
+       (-v(i,j+2)+8.*v(i,j+1)-8.*v(i,j)+v(i,j-1))/(12.*dy))
+    ENDDO
+  ENDDO
+
+  END SUBROUTINE rhs_4_ord
+
+
   SUBROUTINE eulero
 
     CALL rhs(u, v, hp, ut, vt, hpt)
@@ -96,9 +135,9 @@ CONTAINS
 
   SUBROUTINE runge_kutta_2
 
-    CALL rhs(u, v, hp, ut, vt, hpt)
+    CALL rhs_4_ord(u, v, hp, ut, vt, hpt)
     call eulerogen(u, v, hp, ut, vt, hpt, utemp, vtemp, hptemp, dt/2.)
-    CALL rhs(utemp, vtemp, hptemp, ut, vt, hpt) 
+    CALL rhs_4_ord(utemp, vtemp, hptemp, ut, vt, hpt)
     ! piu' speditiva ma u, v, hp assegnate a diverse variabili e'
     ! potenziale fonte di errori
     !    call eulerogen(u, v, hp, ut, vt, hpt, u, v, hp, dt)
