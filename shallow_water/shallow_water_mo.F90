@@ -93,8 +93,8 @@ CONTAINS
   ENDDO
   vt(1:nx,ny-1) = -g*(hp(1:nx,ny-1)-hp(1:nx,ny-2))/dy
 
-  DO j = 1, ny, ny
-    DO i = 1, nx, nx
+  DO j = 1, ny, ny-1
+    DO i = 1, nx, nx-1
       hpt(i,j) = -h*((u(i+1,j)-u(i,j))/dx + (v(i,j+1)-v(i,j))/dy)
     ENDDO
   ENDDO
