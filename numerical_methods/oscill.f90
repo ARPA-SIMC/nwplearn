@@ -16,8 +16,8 @@ ALLOCATE(x(0:nn),y(0:nn))
 ! Grafica
 CALL plsdev('pdfc')
 CALL plsfnam('oscill.pdf')
-CALL plsetopt('portrait', ' ')
-CALL plparseopts(PL_PARSE_FULL)
+!CALL plsetopt('portrait', ' ')
+!CALL plparseopts(PL_PARSE_FULL)
 CALL plscol0 (0, 255, 255, 255)
 CALL plscol0 (1, 0, 0, 0)
 CALL plinit

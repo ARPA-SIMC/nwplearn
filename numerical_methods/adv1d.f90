@@ -33,8 +33,8 @@ limiti=(/-3.*ABS(MAXVAL(u0)),3.*ABS(MAXVAL(u0))/)
 ! Grafica
 CALL plsdev('pdfc')
 CALL plsfnam('adv.pdf')
-CALL plsetopt('portrait', ' ')
-CALL plparseopts(PL_PARSE_FULL)
+!CALL plsetopt('portrait', ' ')
+!CALL plparseopts(PL_PARSE_FULL)
 CALL plscol0 (0, 255, 255, 255)
 CALL plscol0 (1, 0, 0, 0)
 CALL plinit
